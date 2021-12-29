@@ -10,15 +10,13 @@
 
 namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
 
-use GuzzleHttp\Psr7\Stream;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\ServicesBuilder;
+use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IServiceBus;
+use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
+use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\QueueInfo;
+use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ReceiveMessageOptions;
 use Symfony\Component\Messenger\Exception\InvalidArgumentException;
-use WindowsAzure\Common\ServicesBuilder;
-use WindowsAzure\ServiceBus\Internal\IServiceBus;
-use WindowsAzure\ServiceBus\Models\BrokeredMessage;
-use WindowsAzure\ServiceBus\Models\BrokerProperties;
-use WindowsAzure\ServiceBus\Models\QueueInfo;
-use WindowsAzure\ServiceBus\Models\ReceiveMessageOptions;
 
 class Connection
 {
