@@ -1,0 +1,4 @@
+/.stage/
+/vendor/
+/.idea/
+composer.lock
