@@ -11,12 +11,16 @@ namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
 use HttpException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\TransportException;
+use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
 use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 use Symfony\Component\Messenger\Transport\Sender\SenderInterface;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Symfony\Component\Messenger\Transport\SetupableTransportInterface;
+use Symfony\Component\Messenger\Transport\TransportInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
-class AzureServiceBusTransport
+class AzureServiceBusTransport implements TransportInterface, SetupableTransportInterface, MessageCountAwareInterface, ResetInterface
 {
     private $serializer;
     private $connection;

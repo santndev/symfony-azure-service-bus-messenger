@@ -31,6 +31,6 @@ class AzureServiceBusTransportFactory implements TransportFactoryInterface
 
     public function supports(string $dsn, array $options): bool
     {
-        return 0 === preg_match('#^https://[\w\-]+\.servicebus\.windows\.net/.+#', $dsn);
+        return preg_match('#^https://[\w\-]+\.servicebus\.windows\.net/.+#', $dsn);
     }
 }
