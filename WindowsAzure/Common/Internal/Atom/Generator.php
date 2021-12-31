@@ -23,9 +23,9 @@
  * @link      https://github.com/WindowsAzure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
 
 /**
  * The generator class of ATOM library.

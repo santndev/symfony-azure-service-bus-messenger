@@ -6,16 +6,19 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport;
 
+use Exception;
+use GuzzleHttp\Psr7\Stream;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Exception\LogicException;
 use Symfony\Component\Messenger\Exception\MessageDecodingFailedException;
 use Symfony\Component\Messenger\Exception\TransportException;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
 use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
-use WindowsAzure\ServiceBus\Models\BrokeredMessage;
 
 class AzureServiceBusReceiver implements ReceiverInterface, MessageCountAwareInterface
 {
@@ -28,13 +31,8 @@ class AzureServiceBusReceiver implements ReceiverInterface, MessageCountAwareInt
         $this->serializer = $serializer ?? new PhpSerializer();
     }
 
-    public function getMessageCount(): int
-    {
-        // TODO: Implement getMessageCount() method.
-    }
-
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function get(): iterable
     {
@@ -47,28 +45,68 @@ class AzureServiceBusReceiver implements ReceiverInterface, MessageCountAwareInt
         if (null === $sqsEnvelope) {
             return;
         }
-
+        /** @var BrokeredMessage|null $brokeredMessage */
+        $brokeredMessage = $sqsEnvelope['body'];
         try {
-            $envelope = $this->serializer->decode([
-                'body'    => $sqsEnvelope['body'],
-                'headers' => $sqsEnvelope['headers'],
+            $brokeredProperties = null;
+            if ($brokeredMessage) {
+                $brokeredProperties = $brokeredMessage->getBrokerProperties();
+            }
+            $lockLocation = $brokeredProperties ? $brokeredProperties->getLockLocation() : null;
+            /** @var Stream|string $messageBody */
+            $messageBody = $brokeredMessage->getBody();
+            $envelope    = $this->serializer->decode([
+                'body'          => ($messageBody instanceof Stream) ? $messageBody->getContents() : $messageBody,
+                'headers'       => $sqsEnvelope['headers'],
+                'lock_location' => $lockLocation
             ]);
         } catch (MessageDecodingFailedException $exception) {
-            $this->connection->delete($sqsEnvelope['body']);
+            $this->connection->delete($brokeredMessage);
 
             throw $exception;
         }
 
-        yield $envelope->with(new AzureServiceBusReceivedStamp($sqsEnvelope['id']));
+        yield $envelope->with(new AzureServiceBusReceivedStamp($lockLocation));
     }
 
+    /**
+     * {@inheritdoc}
+     * @throws Exception
+     */
     public function ack(Envelope $envelope): void
     {
-        // TODO: Implement ack() method.
+        try {
+            $this->connection->deleteByLockLocation($this->findSqsReceivedStamp($envelope)->getLockLocation());
+        } catch (\HttpException $e) {
+            throw new TransportException($e->getMessage(), 0, $e);
+        }
     }
 
+    /**
+     * @throws Exception
+     */
     public function reject(Envelope $envelope): void
     {
-        // TODO: Implement reject() method.
+        $this->connection->reset();
+    }
+
+    private function findSqsReceivedStamp(Envelope $envelope): AzureServiceBusReceivedStamp
+    {
+        /** @var AzureServiceBusReceivedStamp|null $serviceBusReceivedStamp */
+        $serviceBusReceivedStamp = $envelope->last(AzureServiceBusReceivedStamp::class);
+
+        if (null === $serviceBusReceivedStamp) {
+            throw new LogicException('No AzureServiceBusReceivedStamp found on the Envelope.');
+        }
+
+        return $serviceBusReceivedStamp;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getMessageCount(): int
+    {
+        return $this->connection->getMessageCount();
     }
 }

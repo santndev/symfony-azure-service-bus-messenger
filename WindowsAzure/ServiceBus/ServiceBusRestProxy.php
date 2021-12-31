@@ -23,36 +23,36 @@
  * @link      https://github.com/WindowsAzure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus;
 
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization\ISerializer;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\ServiceRestProxy;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\HttpCallContext;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\HttpClient;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization\XmlSerializer;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom\Content;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom\Entry;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IServiceBus;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokerProperties;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListQueuesOptions;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListQueuesResult;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListSubscriptionsOptions;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListSubscriptionsResult;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListTopicsOptions;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListTopicsResult;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListRulesOptions;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListRulesResult;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListOptions;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\QueueInfo;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ReceiveMessageOptions;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\RuleInfo;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\SubscriptionInfo;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\TopicInfo;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Validate;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization\ISerializer;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\ServiceRestProxy;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\HttpCallContext;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\HttpClient;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization\XmlSerializer;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom\Content;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom\Entry;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IServiceBus;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokerProperties;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListQueuesOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListQueuesResult;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListSubscriptionsOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListSubscriptionsResult;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListTopicsOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListTopicsResult;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListRulesOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListRulesResult;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\QueueInfo;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ReceiveMessageOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\RuleInfo;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\SubscriptionInfo;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\TopicInfo;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Validate;
 
 /**
  * This class constructs HTTP requests and receive HTTP responses
@@ -365,26 +365,7 @@ class ServiceBusRestProxy extends ServiceRestProxy implements IServiceBus
         $httpCallContext = new HttpCallContext();
         $httpCallContext->setMethod(Resources::HTTP_DELETE);
         $lockLocation = $brokeredMessage->getLockLocation();
-        $lockLocationArray = parse_url($lockLocation);
-        $lockLocationPath = Resources::EMPTY_STRING;
-
-        if (array_key_exists(Resources::PHP_URL_PATH, $lockLocationArray)) {
-            $lockLocationPath = $lockLocationArray[Resources::PHP_URL_PATH];
-            $lockLocationPath = preg_replace(
-                '@^\/@',
-                Resources::EMPTY_STRING,
-                $lockLocationPath
-            );
-        }
-
-        if (empty($lockLocationPath)) {
-            throw new \InvalidArgumentException(
-                Resources::MISSING_LOCK_LOCATION_MSG
-            );
-        }
-        $httpCallContext->setPath($lockLocationPath);
-        $httpCallContext->addStatusCode(Resources::STATUS_OK);
-        $this->sendHttpContext($httpCallContext);
+        $this->deleteMessageByLockLocation($lockLocation);
     }
 
     /**
@@ -853,7 +834,7 @@ class ServiceBusRestProxy extends ServiceRestProxy implements IServiceBus
      *
      * @return RuleInfo
      */
-    public function getRule($topicPath, $subscriptionName, $ruleName)
+    public function getRule($topicPath, $subscriptionName, $ruleName): RuleInfo
     {
         $httpCallContext = new HttpCallContext();
         $httpCallContext->setMethod(Resources::HTTP_GET);
@@ -887,7 +868,7 @@ class ServiceBusRestProxy extends ServiceRestProxy implements IServiceBus
         $topicPath,
         $subscriptionName,
         ListRulesOptions $listRulesOptions = null
-    ) {
+    ): ListRulesResult {
         $listRulesPath = sprintf(
             Resources::LIST_RULES_PATH,
             $topicPath,
@@ -903,5 +884,42 @@ class ServiceBusRestProxy extends ServiceRestProxy implements IServiceBus
         $listRulesResult->parseXml($response->getBody());
 
         return $listRulesResult;
+    }
+
+    /**
+     * Deletes a brokered message.
+     * Queues:
+     *
+     * @link http://msdn.microsoft.com/en-us/library/windowsazure/hh780767
+     * Topic Subscriptions:
+     * @link http://msdn.microsoft.com/en-us/library/windowsazure/hh780768
+     *
+     * @param string $lockLocation
+     */
+    public function deleteMessageByLockLocation(string $lockLocation)
+    {
+        var_dump($lockLocation);
+        $httpCallContext = new HttpCallContext();
+        $httpCallContext->setMethod(Resources::HTTP_DELETE);
+        $lockLocationArray = parse_url($lockLocation);
+        $lockLocationPath = Resources::EMPTY_STRING;
+
+        if (array_key_exists(Resources::PHP_URL_PATH, $lockLocationArray)) {
+            $lockLocationPath = $lockLocationArray[Resources::PHP_URL_PATH];
+            $lockLocationPath = preg_replace(
+                '@^\/@',
+                Resources::EMPTY_STRING,
+                $lockLocationPath
+            );
+        }
+
+        if (empty($lockLocationPath)) {
+            throw new \InvalidArgumentException(
+                Resources::MISSING_LOCK_LOCATION_MSG
+            );
+        }
+        $httpCallContext->setPath($lockLocationPath);
+        $httpCallContext->addStatusCode(Resources::STATUS_OK);
+        $this->sendHttpContext($httpCallContext);
     }
 }

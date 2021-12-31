@@ -23,9 +23,9 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
 use Psr\Http\Message\ResponseInterface;
 
 /**

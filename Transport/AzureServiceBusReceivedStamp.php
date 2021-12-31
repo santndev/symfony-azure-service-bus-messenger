@@ -6,21 +6,21 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport;
 
 use Symfony\Component\Messenger\Stamp\NonSendableStampInterface;
 
 class AzureServiceBusReceivedStamp implements NonSendableStampInterface
 {
-    private $id;
+    private $lockLocation;
 
-    public function __construct(string $id)
+    public function __construct(string $lockLocation)
     {
-        $this->id = $id;
+        $this->lockLocation = $lockLocation;
     }
 
-    public function getId(): string
+    public function getLockLocation(): string
     {
-        return $this->id;
+        return $this->lockLocation;
     }
 }

@@ -23,11 +23,11 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Validate;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Validate;
 
 /**
  * Holds basic elements for making HTTP call.

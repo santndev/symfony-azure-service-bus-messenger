@@ -23,9 +23,9 @@
  * @link      https://github.com/WindowsAzure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\FilterableService;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\FilterableService;
 
 /**
  * This class constructs HTTP requests and receive HTTP responses for queue

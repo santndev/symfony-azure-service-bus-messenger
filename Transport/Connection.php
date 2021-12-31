@@ -8,14 +8,15 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\ServicesBuilder;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IServiceBus;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\QueueInfo;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ReceiveMessageOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\ServicesBuilder;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IServiceBus;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ListQueuesOptions;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\QueueInfo;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\ReceiveMessageOptions;
 use Symfony\Component\Messenger\Exception\InvalidArgumentException;
 
 class Connection
@@ -44,7 +45,7 @@ class Connection
      */
     private $serviceBus;
     /**
-     * @var BrokeredMessage
+     * @var BrokeredMessage|null
      */
     private $currentResponse;
 
@@ -89,14 +90,20 @@ class Connection
         // check for extra keys in options
         $optionsExtraKeys = array_diff(array_keys($options), array_keys(self::DEFAULT_OPTIONS));
         if (0 < \count($optionsExtraKeys)) {
-            throw new InvalidArgumentException(sprintf('Unknown option found: [%s]. Allowed options are [%s].',
-                implode(', ', $optionsExtraKeys), implode(', ', array_keys(self::DEFAULT_OPTIONS))));
+            throw new InvalidArgumentException(sprintf(
+                'Unknown option found: [%s]. Allowed options are [%s].',
+                implode(', ', $optionsExtraKeys),
+                implode(', ', array_keys(self::DEFAULT_OPTIONS))
+            ));
         }
         // check for extra keys in options
         $queryExtraKeys = array_diff(array_keys($query), array_keys(self::DEFAULT_OPTIONS));
         if (0 < \count($queryExtraKeys)) {
-            throw new InvalidArgumentException(sprintf('Unknown option found in DSN: [%s]. Allowed options are [%s].',
-                implode(', ', $queryExtraKeys), implode(', ', array_keys(self::DEFAULT_OPTIONS))));
+            throw new InvalidArgumentException(sprintf(
+                'Unknown option found in DSN: [%s]. Allowed options are [%s].',
+                implode(', ', $queryExtraKeys),
+                implode(', ', array_keys(self::DEFAULT_OPTIONS))
+            ));
         }
 
         $options       = $options + self::DEFAULT_OPTIONS;
@@ -110,7 +117,7 @@ class Connection
         ];
 
         $parsedPath = explode('/', ltrim($parsedUrl['path'] ?? '/', '/'));
-        if (\count($parsedPath) > 0 && !empty($queueName = end($parsedPath))) {
+        if (!empty($queueName = end($parsedPath))) {
             $configuration['entity_path'] = $queueName;
         }
 
@@ -123,9 +130,13 @@ class Connection
 
         if ('default' !== ($parsedUrl['host'] ?? 'default')) {
             $clientConfiguration['queue_url'] =
-                sprintf('%s://%s%s', ($query['sslmode'] ?? null) === 'disable' ? 'http' : 'https', $parsedUrl['host'],
-                    ($parsedUrl['port'] ?? null) ? ':'.$parsedUrl['port'] : '');
-        } elseif (self::DEFAULT_OPTIONS['queue_url'] !== $options['queue_url'] ?? self::DEFAULT_OPTIONS['queue_url']) {
+                sprintf(
+                    '%s://%s%s',
+                    ($query['sslmode'] ?? null) === 'disable' ? 'http' : 'https',
+                    $parsedUrl['host'],
+                    ($parsedUrl['port'] ?? null) ? ':'.$parsedUrl['port'] : ''
+                );
+        } elseif (isset($options['queue_url'])) {
             $clientConfiguration['queue_url'] = $options['queue_url'];
         }
         $clientConfigurationString = "
@@ -202,7 +213,8 @@ class Connection
         if (null === $this->currentResponse) {
             $options = new ReceiveMessageOptions();
             $options->setPeekLock();
-            $this->currentResponse = $this->serviceBus->receiveQueueMessage($this->configuration['entity_path'], $options);
+            $this->currentResponse =
+                $this->serviceBus->receiveQueueMessage($this->configuration['entity_path'], $options);
         }
 
         if (!$this->fetchMessage()) {
@@ -214,16 +226,16 @@ class Connection
 
     private function fetchMessage(): bool
     {
-        if($this->currentResponse){
+        if ($this->currentResponse) {
             $headers = [];
-            if($this->currentResponse->getContentType()){
-                $headers['type'] = $this->currentResponse->getContentType();
+            if ($this->currentResponse->getContentType()) {
+                $headers['type'] = $this->currentResponse->getProperties();
             }
 
             $this->buffer[] = [
-                'id' => $this->currentResponse->getMessageId(),
-                'body' => $this->currentResponse->getBody(),
-                'headers' => $headers,
+                'id'      => $this->currentResponse->getMessageId(),
+                'body'    => $this->currentResponse,
+                'headers' => json_encode($headers),
             ];
         }
 
@@ -235,18 +247,44 @@ class Connection
     /**
      * @throws \Exception
      */
-    public function send(string $body, array $headers, int $delay = 0, string $messageGroupId = null, string $messageDeduplicationId = null, string $xrayTraceId = null): void
-    {
+    public function send(
+        string $body,
+        array $headers
+    ): void {
         if ($this->configuration['auto_setup']) {
             $this->setup();
         }
 
         // Create message.
         $message = new BrokeredMessage();
-        $message->setBody($body);
-        if(isset($headers['id'])){
-            $message->setMessageId($headers['id']);
+
+        $specialHeaders = [];
+        foreach ($headers as $name => $value) {
+            if ('.' === $name[0]
+                || self::MESSAGE_ATTRIBUTE_NAME === $name
+                || \strlen($name) > 256
+                || '.' === substr($name, -1)
+                || preg_match('/([^a-zA-Z0-9_\.-]+|\.\.)/', $name)
+            ) {
+                $specialHeaders[$name] = $value;
+
+                continue;
+            }
+
+            $message->setProperty($name, [
+                'DataType'    => 'String',
+                'StringValue' => $value,
+            ]);
         }
+
+        if (!empty($specialHeaders)) {
+            $message->setProperty(self::MESSAGE_ATTRIBUTE_NAME, [
+                'DataType'    => 'String',
+                'StringValue' => json_encode($specialHeaders),
+            ]);
+        }
+
+        $message->setBody($body);
 
         // Send message.
         $this->serviceBus->sendQueueMessage($this->configuration['entity_path'], $message);
@@ -260,8 +298,46 @@ class Connection
         $this->serviceBus->deleteMessage($message);
     }
 
-    public function reset()
+    /**
+     * @throws \Exception
+     */
+    public function deleteByLockLocation(string $lockLocation): void
     {
+        $this->serviceBus->deleteMessageByLockLocation($lockLocation);
+    }
 
+    /**
+     * @throws \Exception
+     */
+    public function reset(): void
+    {
+        if (null !== $this->currentResponse) {
+            // fetch current response in order to requeue in transit messages
+            if (!$this->fetchMessage()) {
+                $this->currentResponse = null;
+            }
+        }
+
+        foreach ($this->getPendingMessages() as $message) {
+            if (isset($message['body']) && ($message['body'] instanceof BrokeredMessage)) {
+                $this->serviceBus->deleteMessage($message['body']);
+            }
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getMessageCount(): int
+    {
+        $response = $this->serviceBus->listQueues();
+        $count = 0;
+        foreach ($response->getQueueInfos() as $queueInfo) {
+            if ($queueInfo->getTitle() === $this->configuration['entity_path']) {
+                $count = $queueInfo->getMessageCount();
+                break;
+            }
+        }
+        return $count;
     }
 }

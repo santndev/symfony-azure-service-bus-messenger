@@ -23,7 +23,7 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization;
 
 /**
  * The serialization interface.

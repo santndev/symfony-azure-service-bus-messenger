@@ -23,10 +23,10 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Authentication;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Authentication;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
 
 /**
  * Base class for azure authentication schemes.
@@ -206,7 +206,10 @@ abstract class StorageAuthScheme implements IAuthScheme
      *
      * @return string
      */
-    abstract protected function computeSignature($headers, $url, $queryParams,
+    abstract protected function computeSignature(
+        $headers,
+        $url,
+        $queryParams,
         $httpMethod
     );
 }

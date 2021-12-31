@@ -23,9 +23,9 @@
  * @link      https://github.com/WindowsAzure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom\Feed;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Atom\Feed;
 
 /**
  * The result of a list topics request.

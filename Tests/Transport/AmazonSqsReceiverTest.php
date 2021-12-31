@@ -6,12 +6,13 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Tests\Transport;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Tests\Transport;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\Tests\Fixtures\DummyMessage;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport\AzureServiceBusReceiver;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport\Connection;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\Tests\Fixtures\DummyMessage;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport\AzureServiceBusReceiver;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport\Connection;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Models\BrokeredMessage;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Serialization\Serializer;
 use Symfony\Component\Serializer as SerializerComponent;
@@ -28,7 +29,7 @@ class AmazonSqsReceiverTest extends TestCase
         $connection = $this->createMock(Connection::class);
         $connection->method('get')->willReturn($sqsEnvelop);
 
-        $receiver = new AzureServiceBusReceiver($connection, $serializer);
+        $receiver        = new AzureServiceBusReceiver($connection, $serializer);
         $actualEnvelopes = iterator_to_array($receiver->get());
         $this->assertCount(1, $actualEnvelopes);
         $this->assertEquals(new DummyMessage('Hi'), $actualEnvelopes[0]->getMessage());
@@ -36,12 +37,16 @@ class AmazonSqsReceiverTest extends TestCase
 
     private function createSqsEnvelope()
     {
+        $message = new BrokeredMessage();
+        $message->setBody('{"message": "Hi"}');
+        $message->setLockLocation('locked');
         return [
-            'id' => 1,
-            'body' => '{"message": "Hi"}',
+            'id'      => 1,
+            'body'    => $message,
             'headers' => [
                 'type' => DummyMessage::class,
             ],
+            'lock_location'=>'locked'
         ];
     }
 

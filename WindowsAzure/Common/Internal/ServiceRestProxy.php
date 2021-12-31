@@ -23,11 +23,11 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\HttpCallContext;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization\ISerializer;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\HttpCallContext;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Serialization\ISerializer;
 use MicrosoftAzure\Storage\Blob\Models\AccessCondition;
 use Psr\Http\Message\ResponseInterface;
 
@@ -175,24 +175,24 @@ class ServiceRestProxy extends RestProxy
             $headerName = null;
             if (!empty($header)) {
                 switch ($header) {
-                case Resources::IF_MATCH:
-                    $headerName = Resources::X_MS_SOURCE_IF_MATCH;
-                    break;
+                    case Resources::IF_MATCH:
+                        $headerName = Resources::X_MS_SOURCE_IF_MATCH;
+                        break;
 
-                case Resources::IF_UNMODIFIED_SINCE:
-                    $headerName = Resources::X_MS_SOURCE_IF_UNMODIFIED_SINCE;
-                    break;
+                    case Resources::IF_UNMODIFIED_SINCE:
+                        $headerName = Resources::X_MS_SOURCE_IF_UNMODIFIED_SINCE;
+                        break;
 
-                case Resources::IF_MODIFIED_SINCE:
-                    $headerName = Resources::X_MS_SOURCE_IF_MODIFIED_SINCE;
-                    break;
+                    case Resources::IF_MODIFIED_SINCE:
+                        $headerName = Resources::X_MS_SOURCE_IF_MODIFIED_SINCE;
+                        break;
 
-                case Resources::IF_NONE_MATCH:
-                    $headerName = Resources::X_MS_SOURCE_IF_NONE_MATCH;
-                    break;
+                    case Resources::IF_NONE_MATCH:
+                        $headerName = Resources::X_MS_SOURCE_IF_NONE_MATCH;
+                        break;
 
-                default:
-                    throw new \Exception(Resources::INVALID_ACH_MSG);
+                    default:
+                        throw new \Exception(Resources::INVALID_ACH_MSG);
                     break;
                 }
             }

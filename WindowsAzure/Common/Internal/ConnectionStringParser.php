@@ -23,7 +23,7 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
 
 /**
  * Helper methods for parsing connection strings. The rules for formatting connection
@@ -125,28 +125,28 @@ class ConnectionStringParser
             }
 
             switch ($this->_state) {
-            case ParserState::EXPECT_KEY:
-                $key = $this->_extractKey();
-                $this->_state = ParserState::EXPECT_ASSIGNMENT;
-                break;
+                case ParserState::EXPECT_KEY:
+                    $key = $this->_extractKey();
+                    $this->_state = ParserState::EXPECT_ASSIGNMENT;
+                    break;
 
-            case ParserState::EXPECT_ASSIGNMENT:
-                $this->_skipOperator('=');
-                $this->_state = ParserState::EXPECT_VALUE;
-                break;
+                case ParserState::EXPECT_ASSIGNMENT:
+                    $this->_skipOperator('=');
+                    $this->_state = ParserState::EXPECT_VALUE;
+                    break;
 
-            case ParserState::EXPECT_VALUE:
-                $value = $this->_extractValue();
-                $this->_state = ParserState::EXPECT_SEPARATOR;
-                $connectionStringValues[$key] = $value;
-                $key = null;
-                $value = null;
-                break;
+                case ParserState::EXPECT_VALUE:
+                    $value = $this->_extractValue();
+                    $this->_state = ParserState::EXPECT_SEPARATOR;
+                    $connectionStringValues[$key] = $value;
+                    $key = null;
+                    $value = null;
+                    break;
 
-            default:
-                $this->_skipOperator(';');
-                $this->_state = ParserState::EXPECT_KEY;
-                break;
+                default:
+                    $this->_skipOperator(';');
+                    $this->_state = ParserState::EXPECT_KEY;
+                    break;
             }
         }
 

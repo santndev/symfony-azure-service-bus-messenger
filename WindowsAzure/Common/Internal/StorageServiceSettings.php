@@ -23,7 +23,7 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
 
 /**
  * Represents the settings used to sign and access a request against the storage
@@ -168,7 +168,8 @@ class StorageServiceSettings extends ServiceSettings
 
         self::$_defaultEndpointsProtocolSetting = self::setting(
             Resources::DEFAULT_ENDPOINTS_PROTOCOL_NAME,
-            'http', 'https'
+            'http',
+            'https'
         );
 
         self::$_accountNameSetting = self::setting(Resources::ACCOUNT_NAME_NAME);
@@ -311,7 +312,7 @@ class StorageServiceSettings extends ServiceSettings
      * @param string $queueEndpointUri The queue endpoint uri
      * @param string $tableEndpointUri The table endpoint uri
      *
-     * @return \Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\StorageServiceSettings
+     * @return \SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\StorageServiceSettings
      */
     private static function _createStorageServiceSettings(
         $settings,

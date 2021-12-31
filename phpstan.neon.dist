@@ -1,0 +1,8 @@
+parameters:
+	level: 6
+	paths:
+		- Transport
+	excludePaths:
+		- %rootDir%/../../../WindowsAzure/*
+	inferPrivatePropertyTypeFromConstructor: true
+	checkMissingIterableValueType: false

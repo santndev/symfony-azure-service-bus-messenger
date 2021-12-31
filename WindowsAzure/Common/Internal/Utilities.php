@@ -23,7 +23,7 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
 
 /**
  * Utilities for the project.
@@ -254,7 +254,10 @@ class Utilities
      *
      * @return string
      */
-    public static function serialize($array, $rootName, $defaultTag = null,
+    public static function serialize(
+        $array,
+        $rootName,
+        $defaultTag = null,
         $standalone = null
     ) {
         $xmlVersion = '1.0';
@@ -380,7 +383,9 @@ class Utilities
         }
 
         $returnValue = str_replace(
-            '+00:00', '.0000000Z', date('c', $timestamp)
+            '+00:00',
+            '.0000000Z',
+            date('c', $timestamp)
         );
         date_default_timezone_set($tz);
 
@@ -722,9 +727,12 @@ class Utilities
 
     public static function lowerUrlencode($str)
     {
-        return preg_replace_callback('/%[0-9A-F]{2}/',
+        return preg_replace_callback(
+            '/%[0-9A-F]{2}/',
             function (array $matches) {
-				return strtolower($matches[0]);
-        }, urlencode($str));
+                return strtolower($matches[0]);
+            },
+            urlencode($str)
+        );
     }
 }

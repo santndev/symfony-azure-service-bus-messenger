@@ -23,7 +23,7 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal;
 
 /**
  * Project resources.
@@ -38,7 +38,8 @@ namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common
  *
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
-class Resources {
+class Resources
+{
     // @codingStandardsIgnoreStart
 
     // Connection strings

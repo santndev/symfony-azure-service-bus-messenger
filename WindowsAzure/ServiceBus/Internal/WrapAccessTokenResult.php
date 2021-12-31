@@ -23,11 +23,11 @@
  * @link      https://github.com/WindowsAzure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Validate;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Validate;
 
 /**
  * Container to hold wrap access token response object.
@@ -70,13 +70,15 @@ class WrapAccessTokenResult
 
         $wrapAccessTokenResult->setAccessToken(
             Utilities::tryGetValue(
-                $parsedResponse, Resources::WRAP_ACCESS_TOKEN
+                $parsedResponse,
+                Resources::WRAP_ACCESS_TOKEN
             )
         );
 
         $wrapAccessTokenResult->setExpiresIn(
             Utilities::tryGetValue(
-                $parsedResponse, Resources::WRAP_ACCESS_TOKEN_EXPIRES_IN
+                $parsedResponse,
+                Resources::WRAP_ACCESS_TOKEN_EXPIRES_IN
             )
         );
 

@@ -6,8 +6,9 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport;
 
+use Exception;
 use HttpException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\TransportException;
@@ -20,20 +21,29 @@ use Symfony\Component\Messenger\Transport\SetupableTransportInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
-class AzureServiceBusTransport implements TransportInterface, SetupableTransportInterface, MessageCountAwareInterface, ResetInterface
+class AzureServiceBusTransport implements
+    TransportInterface,
+    SetupableTransportInterface,
+    MessageCountAwareInterface,
+    ResetInterface
 {
     private $serializer;
     private $connection;
     private $receiver;
     private $sender;
 
-    public function __construct(Connection $connection, SerializerInterface $serializer = null, ReceiverInterface $receiver = null, SenderInterface $sender = null)
-    {
+    public function __construct(
+        Connection $connection,
+        SerializerInterface $serializer = null,
+        ReceiverInterface $receiver = null,
+        SenderInterface $sender = null
+    ) {
         $this->connection = $connection;
         $this->serializer = $serializer ?? new PhpSerializer();
-        $this->receiver = $receiver;
-        $this->sender = $sender;
+        $this->receiver   = $receiver;
+        $this->sender     = $sender;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -60,10 +70,11 @@ class AzureServiceBusTransport implements TransportInterface, SetupableTransport
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function getMessageCount(): int
     {
-        return ($this->receiver ?? $this->getReceiver())->getMessageCount();
+        return $this->connection->getMessageCount();
     }
 
     /**
@@ -71,11 +82,13 @@ class AzureServiceBusTransport implements TransportInterface, SetupableTransport
      */
     public function send(Envelope $envelope): Envelope
     {
-        return ($this->sender ?? $this->getSender())->send($envelope);
+
+        return ($this->sender ??   $this->getSender())->send($envelope);
     }
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function setup(): void
     {
@@ -86,7 +99,10 @@ class AzureServiceBusTransport implements TransportInterface, SetupableTransport
         }
     }
 
-    public function reset()
+    /**
+     * @throws Exception
+     */
+    public function reset(): void
     {
         try {
             $this->connection->reset();

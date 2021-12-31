@@ -23,7 +23,7 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Authentication;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Authentication;
 
 /**
  * Interface for azure authentication schemes.
@@ -55,7 +55,10 @@ interface IAuthScheme
      *
      * @return string
      */
-    public function getAuthorizationHeader($headers, $url, $queryParams,
+    public function getAuthorizationHeader(
+        $headers,
+        $url,
+        $queryParams,
         $httpMethod
     );
 }

@@ -23,14 +23,14 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Filters;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Filters;
 
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\IServiceFilter;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\WrapTokenManager;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IWrap;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Resources;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Utilities;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\IServiceFilter;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http\IHttpClient;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\WrapTokenManager;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\ServiceBus\Internal\IWrap;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -46,11 +46,12 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
-class SASFilter implements IServiceFilter {
+class SASFilter implements IServiceFilter
+{
 
-	private $sharedAccessKeyName;
+    private $sharedAccessKeyName;
 
-	private $sharedAccessKey;
+    private $sharedAccessKey;
 
     public function __construct(
         $sharedAccessKeyName,
@@ -67,12 +68,13 @@ class SASFilter implements IServiceFilter {
      *
      * @return IHttpClient
      */
-    public function handleRequest(IHttpClient $request) {
+    public function handleRequest(IHttpClient $request)
+    {
         $token = $this->getAuthorization(
-        	$request->getUrl(),
-        	$this->sharedAccessKeyName,
-        	$this->sharedAccessKey
-    	);
+            $request->getUrl(),
+            $this->sharedAccessKeyName,
+            $this->sharedAccessKey
+        );
 
         $request->setHeader(Resources::AUTHENTICATION, $token);
 
@@ -84,16 +86,18 @@ class SASFilter implements IServiceFilter {
      * @param $policy
      * @param $key
      */
-    private function getAuthorization($url, $sharedAccessKeyName, $sharedAccessKey) {
+    private function getAuthorization($url, $sharedAccessKeyName, $sharedAccessKey)
+    {
         $expiry = time() + 3600;
         $encodedUrl = Utilities::lowerUrlencode($url);
         $scope = $encodedUrl . "\n" . $expiry;
         $signature = base64_encode(hash_hmac('sha256', $scope, $sharedAccessKey, true));
-        return sprintf(Resources::SAS_AUTHORIZATION,
-        	Utilities::lowerUrlencode($signature),
-        	$expiry,
-        	$sharedAccessKeyName,
-        	$encodedUrl
+        return sprintf(
+            Resources::SAS_AUTHORIZATION,
+            Utilities::lowerUrlencode($signature),
+            $expiry,
+            $sharedAccessKeyName,
+            $encodedUrl
         );
     }
 
@@ -106,7 +110,8 @@ class SASFilter implements IServiceFilter {
      *
      * @return ResponseInterface
      */
-    public function handleResponse(IHttpClient $request, ResponseInterface $response) {
+    public function handleResponse(IHttpClient $request, ResponseInterface $response)
+    {
         return $response;
     }
 }

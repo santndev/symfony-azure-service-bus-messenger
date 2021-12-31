@@ -6,7 +6,7 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Transport;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Transport;
 
 use HttpException;
 use Symfony\Component\Messenger\Envelope;
@@ -33,35 +33,10 @@ class AzureServiceBusSender implements SenderInterface
     {
         $encodedMessage = $this->serializer->encode($envelope);
 
-        /** @var DelayStamp|null $delayStamp */
-        $delayStamp = $envelope->last(DelayStamp::class);
-        $delay = null !== $delayStamp ? (int) ceil($delayStamp->getDelay() / 1000) : 0;
-
-        $messageGroupId = null;
-        $messageDeduplicationId = null;
-        $xrayTraceId = null;
-
-//        /** @var AmazonSqsFifoStamp|null $amazonSqsFifoStamp */
-//        $amazonSqsFifoStamp = $envelope->last(AmazonSqsFifoStamp::class);
-//        if (null !== $amazonSqsFifoStamp) {
-//            $messageGroupId = $amazonSqsFifoStamp->getMessageGroupId();
-//            $messageDeduplicationId = $amazonSqsFifoStamp->getMessageDeduplicationId();
-//        }
-
-//        /** @var AmazonSqsXrayTraceHeaderStamp|null $amazonSqsXrayTraceHeaderStamp */
-//        $amazonSqsXrayTraceHeaderStamp = $envelope->last(AmazonSqsXrayTraceHeaderStamp::class);
-//        if (null !== $amazonSqsXrayTraceHeaderStamp) {
-//            $xrayTraceId = $amazonSqsXrayTraceHeaderStamp->getTraceId();
-//        }
-
         try {
             $this->connection->send(
                 $encodedMessage['body'],
-                $encodedMessage['headers'] ?? [],
-                $delay,
-                $messageGroupId,
-                $messageDeduplicationId,
-                $xrayTraceId
+                $encodedMessage['headers'] ?? []
             );
         } catch (HttpException $e) {
             throw new TransportException($e->getMessage(), 0, $e);

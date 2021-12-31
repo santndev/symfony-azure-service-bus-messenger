@@ -6,7 +6,7 @@
  * @author       San.Tran <solesantn@gmail.com>
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\Tests\Fixtures;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\Tests\Fixtures;
 
 class DummyMessage
 {

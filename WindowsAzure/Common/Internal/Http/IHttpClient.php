@@ -23,10 +23,10 @@
  * @link      https://github.com/windowsazure/azure-sdk-for-php
  */
 
-namespace Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http;
+namespace SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\Internal\Http;
 
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\ServiceException;
+use SanTran\Component\Messenger\Bridge\AzureServiceBus\WindowsAzure\Common\ServiceException;
 
 /**
  * Defines required methods for a HTTP client proxy.
